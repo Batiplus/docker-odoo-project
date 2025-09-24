@@ -36,10 +36,10 @@ on_exit() {
 
 trap on_exit EXIT
 
-cp -r ${VERSION}/. ${TMP}/
-cp -r bin/ ${TMP}
-cp -r install/ ${TMP}
-cp -r start-entrypoint.d/ ${TMP}
-cp -r before-migrate-entrypoint.d/ ${TMP}
+cp -r ${VERSION}/. ${TMP}
+cp -r bin ${TMP}
+cp -r install ${TMP}
+cp -r start-entrypoint.d ${TMP}
+cp -r before-migrate-entrypoint.d ${TMP}
 
 docker build --progress plain --no-cache -f ${TMP}/Dockerfile -t ${BUILD_TAG} ${TMP} 

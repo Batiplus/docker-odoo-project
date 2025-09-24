@@ -63,6 +63,12 @@ $ make VERSION=11.0
 $ make VERSION=10.0
 ```
 
+### Build for arm64
+
+```
+make VERSION=15.0 PLATFORMS=linux/arm64 IMAGE_LATEST=batiplus/odoo:15.0
+```
+
 ## Configuration
 
 The host for the database is in `$DB_HOST` (`db` by default).

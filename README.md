@@ -104,6 +104,11 @@ $ make VERSION=10.0 BATTERIES=True
 $ make VERSION=9.0 BATTERIES=True
 ```
 
+### Build for arm64
+
+```
+make VERSION=15.0 PLATFORMS=linux/arm64 NAME=batiplus/odoo BUILD_TAG=batiplus/odoo:15.0-4.5.6
+```
 
 ## Configuration
 

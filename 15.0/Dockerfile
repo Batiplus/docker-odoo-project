@@ -38,8 +38,8 @@ RUN set -x; \
         && /install/kwkhtml_client.sh \
         && /install/kwkhtml_client_force_python3.sh \
         && /install/dev_package.sh \
-        && python3 -m pip install --force-reinstall pip "setuptools<58" \
-        && pip install -r /odoo/base_requirements.txt --ignore-installed \
+        && python3 -m pip install --force-reinstall pip "setuptools<58" wheel "Cython<3" \
+        && pip install --no-build-isolation -r /odoo/base_requirements.txt --ignore-installed \
         && /install/purge_dev_package_and_cache.sh
 
 # grab gosu for easy step-down from root and dockerize to generate template and

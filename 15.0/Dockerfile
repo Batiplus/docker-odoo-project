@@ -80,7 +80,7 @@ USER odoo
 EXPOSE 8069 8072
 
 ENV ODOO_VERSION=15.0 \
-    PATH=/odoo/odoo-bin:/odoo/.local/bin:$PATH \
+    PATH=/odoo/.venv/bin:/odoo/odoo-bin:/odoo/.local/bin:$PATH \
     LANG=C.UTF-8 \
     LC_ALL=C.UTF-8 \
     DB_HOST=db \

@@ -30,17 +30,32 @@ on_exit() {
 
 trap on_exit EXIT
 
-cp -r ${VERSION}/. ${TMP}/
-cp -r bin/ ${TMP}
-cp -r bin-py2/ ${TMP}
-cp -rT common/ ${TMP}
+cp -r ${VERSION}/. ${TMP}
+cp -r bin ${TMP}
+cp -r bin-py2 ${TMP}
+# Copy "common" into $TMP in a cross-platform way (GNU/BSD cp)
+# Try GNU cp first (-T), fall back to BSD cp syntax
+cp -rT common ${TMP} 2>/dev/null || cp -R common/. ${TMP}
+
 cp ${TMP}/Dockerfile-onbuild ${TMP}/Dockerfile-batteries-onbuild
-sed -i "1i FROM ${BUILD_TAG}" ${TMP}/Dockerfile-onbuild
-sed -i "1i FROM ${BUILD_TAG}" ${TMP}/Dockerfile-batteries
-sed -i "1i FROM ${BUILD_TAG}-batteries" ${TMP}/Dockerfile-batteries-onbuild
-cp -r install/ ${TMP}
-cp -r start-entrypoint.d/ ${TMP}
-cp -r before-migrate-entrypoint.d/ ${TMP}
+# Prepend FROM lines portably (avoid sed -i differences between GNU/BSD)
+{
+    printf 'FROM %s\n' "${BUILD_TAG}"
+    cat "${TMP}/Dockerfile-onbuild"
+} > "${TMP}/.Dockerfile-onbuild.tmp" && mv "${TMP}/.Dockerfile-onbuild.tmp" "${TMP}/Dockerfile-onbuild"
+
+{
+    printf 'FROM %s\n' "${BUILD_TAG}"
+    cat "${TMP}/Dockerfile-batteries"
+} > "${TMP}/.Dockerfile-batteries.tmp" && mv "${TMP}/.Dockerfile-batteries.tmp" "${TMP}/Dockerfile-batteries"
+
+{
+    printf 'FROM %s-batteries\n' "${BUILD_TAG}"
+    cat "${TMP}/Dockerfile-batteries-onbuild"
+} > "${TMP}/.Dockerfile-batteries-onbuild.tmp" && mv "${TMP}/.Dockerfile-batteries-onbuild.tmp" "${TMP}/Dockerfile-batteries-onbuild"
+cp -r install ${TMP}
+cp -r start-entrypoint.d ${TMP}
+cp -r before-migrate-entrypoint.d ${TMP}
 
 docker build --no-cache -f ${TMP}/Dockerfile -t ${BUILD_TAG} ${TMP}
 docker build --no-cache -f ${TMP}/Dockerfile-onbuild -t ${BUILD_TAG}-onbuild ${TMP}
